@@ -2,6 +2,9 @@ function [ behave ] = behavior( data )
 %behavior Summary of this function goes here
 %   Detailed explanation goes here
 
+
+
+
 %% Start process
 behave = data(:, 2:9);
 behave.RT = zeros(height(behave), 1);
