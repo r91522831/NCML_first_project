@@ -5,6 +5,9 @@ function [ behave ] = behavior( data )
 
 
 
+
+
+
 %% Start process
 behave = data(:, 2:9);
 behave.RT = zeros(height(behave), 1);
