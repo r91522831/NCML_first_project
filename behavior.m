@@ -29,8 +29,7 @@ for i = 1:height(data)
     
     ind_cue_on = find(~cellfun(@isempty, strfind(tmp_event_time(:, 1), 'CUE_ON')), 1);
     time_cue_on = tmp_event_time{ind_cue_on, 2};
-%     ind_location_on = find(~cellfun(@isempty, strfind(tmp_event_time(:, 1), 'LOCATION_ON')), 1);
-    
+%     ind_location_on = find(~cellfun(@isempty, strfind(tmp_event_time(:, 1), 'LOCATION_ON')), 1);    
 %     time_location_on = tmp_event_time{ind_location_on, 2};
 
     ind_go_on = find(~cellfun(@isempty, strfind(tmp_event_time(:, 1), 'TARGET_GO')), 1);
@@ -47,9 +46,10 @@ for i = 1:height(data)
     [peak_vel, ind_peak] = max(tmp_vel);
     
     behave{i, 'pVel'} = peak_vel;
-    % compute the manual movement onset by 1% pVel backward from pVel
-    for j = ind_peak:-1:1
-        if tmp_vel(j) < 0.01 * tmp_vel(ind_peak)
+    ind_time_move_ini = floor(time_move_ini / dt);
+    % compute the manual movement onset by 2% pVel backward from MOVE_OUT_SP
+    for j = ind_time_move_ini:-1:1
+        if tmp_vel(j) < 0.02 * tmp_vel(ind_peak)
             ind_mov = j;
             break;
         end
