@@ -74,7 +74,9 @@ for i = subid
                                                                      summary_table.pVel(cond_unpp), ...
                                                                      summary_table.man_t2pVel(cond_unpp), ...
                                                                      summary_table.manMT(cond_unpp), ...
-                                                                     summary_table.iniAngDevi(cond_unpp) };
+                                                                     summary_table.iniAngDevi(cond_unpp)...
+                                                                     summary_table.maxPathDevi(cond_unpp), ...
+                                                                     summary_table.pathLength(cond_unpp) };
 
                     tmp_table = [tmp_table; tmp_row];
                 end
@@ -90,7 +92,9 @@ for i = subid
                                    summary_table.pVel(cond_unpp), ...
                                    summary_table.man_t2pVel(cond_unpp), ...
                                    summary_table.manMT(cond_unpp), ...
-                                   summary_table.iniAngDevi(cond_unpp) };
+                                   summary_table.iniAngDevi(cond_unpp), ...
+                                   summary_table.maxPathDevi(cond_unpp), ...
+                                   summary_table.pathLength(cond_unpp) };
             tmp_table = [tmp_table; tmp_row];
         end
     end
@@ -101,22 +105,22 @@ trial_var_names = { 'SubID', 'Section', 'PertProb', 'GoDelay', 'RT', ...
                     'pVel_np', ...
                     't2pVel_np', ...
                     'MT_np', ...
-                    'iniAngDevi_np' };
+                    'iniAngDevi_np', 'maxPathDevi_np', 'pathLength_np' };
                 
 trial_variables = array2table(tmp_table, 'VariableNames', trial_var_names);
 
 %% plot for section 1
 figure(1)
-avg_var = zeros(3, 8);
+avg_var = zeros(3, 10);
 sd_var = avg_var;
 for i = subid
     cond = ( cell2mat(trial_variables{:, 'SubID'}) == subid(i) & ...
              cell2mat(trial_variables{:, 'Section'}) == 1 );
-    avg_var(i, :) = cellfun(@mean, trial_variables{cond, 5:12});
-    sd_var(i, :) = cellfun(@std, trial_variables{cond, 5:12});
+    avg_var(i, :) = cellfun(@mean, trial_variables{cond, 5:14});
+    sd_var(i, :) = cellfun(@std, trial_variables{cond, 5:14});
 end
 for j = 1:size(avg_var, 2)
-    subplot(2, 4, j)
+    subplot(2, 5, j)
     errorbar(avg_var(:, j), sd_var(:, j), 'o')
     ylabel(trial_var_names{4 + j});
 end
@@ -125,14 +129,14 @@ savefig('figure1_baseline.fig')
 figure(2)
 avg_var = [];
 sd_var = [];
-real_picked = cell(3, 8);
+real_picked = cell(3, 10);
 for i = subid
     for pp = pert_lvl
         cond = ( cell2mat(trial_variables{:, 'SubID'}) == subid(i) & ...
                  cell2mat(trial_variables{:, 'Section'}) == 2 & ...
                  cell2mat(trial_variables{:, 'PertProb'}) == pp );
         % merge trials
-        tmp_picked = trial_variables{cond, 5:12};
+        tmp_picked = trial_variables{cond, 5:14};
         for c = 1:size(tmp_picked, 2)
             real_picked{i, c} = cell2mat(tmp_picked(:, c));
         end
@@ -144,7 +148,7 @@ avg_var = sortrows(avg_var, 2);
 sd_var = sortrows(sd_var, 2);
 
 for j = 3:size(avg_var, 2)
-    subplot(2, 4, j-2)
+    subplot(2, 5, j-2)
     hold on
     for i = 1:3:size(avg_var, 1)
         errorbar((avg_var(i + 0, 2) - 2), avg_var(i + 0, j), sd_var(i + 0, j), 'or')
@@ -159,14 +163,14 @@ savefig('figure2_pertb2.fig')
 figure(3)
 avg_var = [];
 sd_var = [];
-real_picked = cell(3, 8);
+real_picked = cell(3, 10);
 for i = subid
     for gd = godelay_lvl
         cond = ( cell2mat(trial_variables{:, 'SubID'}) == subid(i) & ...
                  cell2mat(trial_variables{:, 'Section'}) == 2 & ...
                  cell2mat(trial_variables{:, 'GoDelay'}) == gd );
         % merge trials
-        tmp_picked = trial_variables{cond, 5:12};
+        tmp_picked = trial_variables{cond, 5:14};
         for c = 1:size(tmp_picked, 2)
             real_picked{i, c} = cell2mat(tmp_picked(:, c));
         end
@@ -178,7 +182,7 @@ avg_var = sortrows(avg_var, 2);
 sd_var = sortrows(sd_var, 2);
 
 for j = 3:size(avg_var, 2)
-    subplot(2, 4, j-2)
+    subplot(2, 5, j-2)
     hold on
     for i = 1:3:size(avg_var, 1)
         errorbar((avg_var(i + 0, 2) - 20), avg_var(i + 0, j), sd_var(i + 0, j), 'or')
@@ -193,14 +197,14 @@ savefig('figure3_godelay2.fig')
 figure(4)
 avg_var = [];
 sd_var = [];
-real_picked = cell(3, 8);
+real_picked = cell(3, 10);
 for i = subid
     for pp = pert_lvl
         cond = ( cell2mat(trial_variables{:, 'SubID'}) == subid(i) & ...
                  cell2mat(trial_variables{:, 'Section'}) == 3 & ...
                  cell2mat(trial_variables{:, 'PertProb'}) == pp );
         % merge trials
-        tmp_picked = trial_variables{cond, 5:12};
+        tmp_picked = trial_variables{cond, 5:14};
         for c = 1:size(tmp_picked, 2)
             real_picked{i, c} = cell2mat(tmp_picked(:, c));
         end
@@ -212,7 +216,7 @@ avg_var = sortrows(avg_var, 2);
 sd_var = sortrows(sd_var, 2);
 
 for j = 3:size(avg_var, 2)
-    subplot(2, 4, j-2)
+    subplot(2, 5, j-2)
     hold on
     for i = 1:3:size(avg_var, 1)
         errorbar((avg_var(i + 0, 2) - 2), avg_var(i + 0, j), sd_var(i + 0, j), 'or')
@@ -227,14 +231,14 @@ savefig('figure4_pertb3.fig')
 figure(5)
 avg_var = [];
 sd_var = [];
-real_picked = cell(3, 8);
+real_picked = cell(3, 10);
 for i = subid
     for gd = godelay_lvl
         cond = ( cell2mat(trial_variables{:, 'SubID'}) == subid(i) & ...
                  cell2mat(trial_variables{:, 'Section'}) == 3 & ...
                  cell2mat(trial_variables{:, 'GoDelay'}) == gd );
         % merge trials
-        tmp_picked = trial_variables{cond, 5:12};
+        tmp_picked = trial_variables{cond, 5:14};
         for c = 1:size(tmp_picked, 2)
             real_picked{i, c} = cell2mat(tmp_picked(:, c));
         end
@@ -246,7 +250,7 @@ avg_var = sortrows(avg_var, 2);
 sd_var = sortrows(sd_var, 2);
 
 for j = 3:size(avg_var, 2)
-    subplot(2, 4, j-2)
+    subplot(2, 5, j-2)
     hold on
     for i = 1:3:size(avg_var, 1)
         errorbar((avg_var(i + 0, 2) - 20), avg_var(i + 0, j), sd_var(i + 0, j), 'or')

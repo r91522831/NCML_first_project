@@ -79,10 +79,7 @@ for i = 1:height(data)
         fprintf('The subject did not reach the target area in trial %d.\n', i);
         clear ind_reach
         continue;
-    elseif length(ind_reach) > 1
-        fprintf('The subject reached the target area more than once in trial %d.\n', i);
     end
-    
     time_reach = tmp_event_time{ind_reach, 2};
     % compute movement time in seconds based on logged KinARM event
     behave{i, 'MT'} = time_reach - time_move_ini;
@@ -96,14 +93,14 @@ for i = 1:height(data)
     fin_position = mean(tmp_kine_filter((end-1000):end, 1:2), 1);
     ideal_vector = fin_position - ini_position;
     
-    ind_mov_end = floor(time_reach / dt);
+    ind_mov_end = time_reach / dt;
     dist = zeros(length(ind_mov:ind_mov_end), 1);
     for pt = ind_mov:ind_mov_end
         tmp_vector = fin_position - tmp_kine_filter(pt, 1:2);
         dist(pt, 1) = norm(cross([ideal_vector, 0], [tmp_vector, 0]))/norm(ideal_vector);
     end    
     behave{i, 'maxPathDevi'} = max(dist);
-    behave{i, 'pathLength'} = sum(tmp_vel(ind_mov:ind_mov_end, :) .* dt);
+    behave{i, 'pathLength'} = sqrt(sum(sum(tmp_vel(ind_mov:ind_mov_end, 1:2).^2)));
     
     pVel_postion = tmp_kine_filter(ind_peak, 1:2);
     movement_ini_vector = pVel_postion - ini_position;
