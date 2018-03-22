@@ -91,12 +91,10 @@ for i = 1:height(data)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % compute initial movement angle deviate from ideal straight initial-end targets line
-    ind_cue = floor(time_cue_on / dt);
-    ini_position = mean(tmp_kine_filter(ind_cue:ind_mov, 1:2), 1);
-    fin_position = mean(tmp_kine_filter((end-1000):end, 1:2), 1);
-    ideal_vector = fin_position - ini_position;
-    
+    ini_position = tmp_kine_filter(ind_mov, 1:2);
     ind_mov_end = floor(time_reach / dt);
+    fin_position = tmp_kine_filter(ind_mov_end, 1:2);
+    ideal_vector = fin_position - ini_position;
     dist = zeros(length(ind_mov:ind_mov_end), 1);
     for pt = ind_mov:ind_mov_end
         tmp_vector = fin_position - tmp_kine_filter(pt, 1:2);
@@ -105,6 +103,12 @@ for i = 1:height(data)
     behave{i, 'maxPathDevi'} = max(dist);
     behave{i, 'pathLength'} = sum(tmp_vel(ind_mov:ind_mov_end, :) .* dt);
     
+    % Since the angle comuptation is very sensitive, the final position is
+    % defined at the end of the reach instead of the reach event
+    ind_cue = floor(time_cue_on / dt);
+    ini_position = mean(tmp_kine_filter(ind_cue:ind_mov, 1:2), 1);
+    fin_position = mean(tmp_kine_filter((end-1000):end, 1:2), 1);
+    ideal_vector = fin_position - ini_position;
     pVel_postion = tmp_kine_filter(ind_peak, 1:2);
     movement_ini_vector = pVel_postion - ini_position;
     

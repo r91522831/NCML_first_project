@@ -36,3 +36,5 @@ for i = 1:length(SUB_list) % subject
         end
     end
 end
+
+save(fullfile(SUB_dir, 'summary_table.mat'), 'summary_table');
