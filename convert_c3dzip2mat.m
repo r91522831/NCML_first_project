@@ -4,7 +4,7 @@ function [ data ] = convert_c3dzip2mat( filepath, filename )
 full_filename = fullfile(filepath, filename);
 
 data = zip_load(full_filename);             % Loads all c3d_files into a new structure called 'data'.
-data = KINARM_add_hand_kinematics(data);	% Add hand velocity, acceleration and commanded forces to the data structure
+data.c3d = KINARM_add_hand_kinematics(data.c3d);	% Add hand velocity, acceleration and commanded forces to the data structure
 
 end
 
